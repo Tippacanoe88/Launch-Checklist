@@ -1,8 +1,8 @@
 require("cross-fetch/polyfill");
 
 function addDestinationInfo(document, name, diameter, star, distance, moons, imageUrl) {
-  let missionTarget = document.getElementById('missionTarget');
-  missionTarget.innerHTML = `
+    let missionTarget = document.getElementById('missionTarget');
+    missionTarget.innerHTML = `
       <h2>Mission Destination</h2>
       <ol>
           <li>Name: ${name}</li>
@@ -16,9 +16,9 @@ function addDestinationInfo(document, name, diameter, star, distance, moons, ima
 }
 //validateInput checks the input to see if its empty.
 function validateInput(testInput) {
-    if (testInput.trim === '') {
+    if (testInput.trim() === '') {
         return 'Empty';
-    } else if (isNaN(testInput)) {
+    } else if (isNaN(Number(testInput))) {
         return 'Not a Number';
     } else {
         return 'Valid entry';
@@ -32,11 +32,11 @@ function formSubmission(document, list, pilot, copilot, fuelLevel, cargoMass) {
     let fuelStatus = document.getElementById('fuelStatus');
     let cargoStatus = document.getElementById('cargoStatus');
     let launchStatus = document.getElementById('launchStatus');
-  
+
     faultyItems.style.visibility = 'visible';
     pilotStatus.innerHTML = (`Pilot ${pilot} is ready for launch`);
     copilotStatus.innerHTML = (`Co-pilot ${copilot} is ready for launch`);
-  
+
     if (fuelLevel < 10000) {
         fuelStatus.innerHTML = 'There is not enough fuel for the journey';
         launchStatus.innerHTML = 'Shuttle not ready for launch';
@@ -44,7 +44,7 @@ function formSubmission(document, list, pilot, copilot, fuelLevel, cargoMass) {
     } else {
         fuelStatus.innerHTML = 'Fuel level high enough for launch';
     }
-  
+
     if (cargoMass > 10000) {
         cargoStatus.innerHTML = 'There is too much mass for the shuttle to take off';
         launchStatus.innerHTML = 'Shuttle not ready for launch';
@@ -52,16 +52,16 @@ function formSubmission(document, list, pilot, copilot, fuelLevel, cargoMass) {
     } else {
         cargoStatus.innerHTML = 'Cargo mass low enough for launch';
     }
-  
+
     if (fuelLevel >= 10000 && cargoMass <= 10000) {
         launchStatus.innerHTML = 'Shuttle is ready for launch';
         launchStatus.style.color = 'green';
     }
-  }
+}
 
-  async function myFetch() {
+async function myFetch() {
     let planetsReturned;
-  
+
     planetsReturned = await fetch("https://handlers.education.launchcode.org/static/planets.json")
         .then(function (response) {
             if (response.ok) {
@@ -70,9 +70,14 @@ function formSubmission(document, list, pilot, copilot, fuelLevel, cargoMass) {
                 throw new Error("Network response was not ok");
             }
         });
-  
+
     return planetsReturned;
-  }
+}
+
+function pickPlanet(planets) {
+    let index = Math.floor(Math.random() * planets.length);
+    return planets[index];
+}
 
 // Export functions for use in other files
 module.exports = {
