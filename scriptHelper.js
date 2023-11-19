@@ -5,7 +5,7 @@
 function addDestinationInfo(document, name, diameter, star, distance, moons, imageUrl, listedPlanets) {
     //Locating the missionTarget div using the document parameter
     const missionTargetDiv = document.getElementById('missionTarget');
-//This function populates the missionTarget div with info about the mission destination
+    //This function populates the missionTarget div with info about the mission destination
 
     // HTML structure for mission target info
     missionTargetDiv.innerHTML = `
@@ -31,7 +31,7 @@ function validateInput(testInput) {
     }
 }
 /*formSubmission validates the form inputs using the validateInput*/
-async function formSubmission(document, list, pilot, copilot, fuelLevel, cargoLevel, listedPlanets) {
+async function formSubmission(document, listedPlanets, pilot, copilot, fuelLevel, cargoLevel) {
     // Validate form inputs
     let pilotStatus = validateInput(pilot);
     let copilotStatus = validateInput(copilot);
@@ -40,17 +40,19 @@ async function formSubmission(document, list, pilot, copilot, fuelLevel, cargoLe
 
     // ... (your form submission logic)
     const randomPlanet = pickPlanet(listedPlanets);
-    const {name, diameter, star, distance, moons, imageURL} = randomPlanet;
+    const { name, diameter, star, distance, moons, imageURL } = randomPlanet;
 
     // Example of updating the DOM based on form submission results
     if (pilotStatus === 'Valid entry' &&
         copilotStatus === 'Valid entry' &&
         fuelStatus === 'Valid entry' &&
         cargoStatus === 'Valid entry'
-        ) {
+    ) {
         addDestinationInfo(document, name, diameter, star, distance, moons, imageUrl);
         document.getElementById('pilotStatus').innerHTML = `Pilot ${pilot} is ready for launch`;
-        document.getElementById('copilotStatus').innerHTML = `Co-Pilot ${copilot} is readyu for launch`;
+        document.getElementById('copilotStatus').innerHTML = `Co-Pilot ${copilot} is ready for launch`;
+
+        const fuelLevelValue = parseFloat(fuelLevel);
 
         if (fuelLevel < 10000) {
             document.getElementById('fuelStatus').innerHTML = 'Fuel level too low for launch';
@@ -59,10 +61,10 @@ async function formSubmission(document, list, pilot, copilot, fuelLevel, cargoLe
         }
         document.getElementById('launchStatus').innerHTML = 'Ready for launch';
     } else {
-        document.getElementById('pilotStatus').innerHTML = 'Pilot status: ${pilotStatus}';
-        document.getElementById('copilotStatus').innerHTML = 'Co-pilot status: ${copilotStatus}';
-        document.getElementById('fuelStatus').innerHTML = 'Fuel status: ${fuelStatus}';
-        document.getElementById('cargoStatus').innerHTML = 'Cargo status: ${cargoStatus}';
+        document.getElementById('pilotStatus').innerHTML = `Pilot status: ${pilotStatus}`;
+        document.getElementById('copilotStatus').innerHTML = `Co-pilot status: ${copilotStatus}`;
+        document.getElementById('fuelStatus').innerHTML = `Fuel status: ${fuelStatus}`;
+        document.getElementById('cargoStatus').innerHTML = `Cargo status: ${cargoStatus}`;
 
         document.getElementById('launchStatus').innerHTML = 'Awaiting Information Launch';
     }
@@ -83,9 +85,9 @@ async function myFetch() {
     }
 }
 
-function pickPlanet(planets) {
-    const randomIndex = Math.floor(Math.random() * planets.length);
-    return planets[randomIndex];
+function pickPlanet(listedPlanets) {
+    const randomIndex = Math.floor(Math.random() * listedPlanets.length);
+    return listedPlanets[randomIndex];
 }
 
 // Export functions for use in other files
@@ -98,11 +100,11 @@ module.exports = {
 };
 
 // Event listener for form submission
-document.addEventListener('DOMContentLoaded', async function() {
+document.addEventListener('DOMContentLoaded', async function () {
     const listedPlanets = await myFetch();
     
     const formSubmitButton = document.getElementById('formSubmit');
-    formSubmitButton.addEventListener('click', function(event) {
+    formSubmitButton.addEventListener('click', function (event) {
         event.preventDefault(); // Prevent form from submitting
 
         // Retrieve form values and call formSubmission
@@ -110,7 +112,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const copilotName = document.getElementById('copilotName').value;
         const fuelLevel = document.querySelector('input[name="fuelLevel"]').value;
         const cargoMass = document.querySelector('input[name="cargoMass"]').value;
-        
+
 
         formSubmission(document, listedPlanets, pilotName, copilotName, fuelLevel, cargoMass);
     });
